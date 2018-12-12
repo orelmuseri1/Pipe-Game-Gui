@@ -3,15 +3,20 @@ package view;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.stage.Window;
 
 public class MazeDisplayer extends Canvas{
 	char[][] mazeData;
-	
+	@FXML
+	Canvas mazeDisplayer;
 	void setMazeData(char[][] mazeData) {
 		this.mazeData=mazeData;
+	 //   widthProperty().addListener(evt -> redraw());
+     //   heightProperty().addListener(evt -> redraw());
 		redraw();
 	}
 
@@ -23,7 +28,20 @@ public class MazeDisplayer extends Canvas{
 			double w= (W / mazeData[0].length);
 			double h= (H / mazeData.length);
 			GraphicsContext gc=getGraphicsContext2D();
-			Image Lp = null, widthLine=null, highLine=null ,jp=null ,Fp=null, seven=null, nothing= null;
+			Image Lp = null, widthLine=null, highLine=null ,jp=null ,Fp=null, seven=null, nothing= null, sp=null,gp=null;
+			gc.clearRect(0, 0, W, H);
+			//name all the images
+			try {
+				sp = new Image(new FileInputStream("./resources/s.jpg"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	try {
+				gp = new Image(new FileInputStream("./resources/g.jpg"));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			try {
 				Lp = new Image(new FileInputStream("./resources/L.jpg"));
 			} catch (FileNotFoundException e) {
@@ -66,8 +84,7 @@ public class MazeDisplayer extends Canvas{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
+			//paint the game
 			for(int i=0;i<mazeData.length;i++)
 			{
 				for (int j=0;j<mazeData[i].length;j++)
@@ -79,9 +96,11 @@ public class MazeDisplayer extends Canvas{
 					else if (mazeData[i][j]== '|')  {gc.drawImage(highLine, j*w, i*h, w, h);}
 					else if (mazeData[i][j]== 'F')   {gc.drawImage(Fp, j*w, i*h, w, h);}
 					else if (mazeData[i][j]== '7')  {gc.drawImage(seven, j*w, i*h, w, h);}
+					else if (mazeData[i][j]== 's')  {gc.drawImage(sp, j*w, i*h, w, h);}
+					else if (mazeData[i][j]== 'g')  {gc.drawImage(gp, j*w, i*h, w, h);}
 					else {gc.drawImage(nothing, j*w, i*h, w, h);}
 				}
-			}
+			}	
 		}
 	}
 }

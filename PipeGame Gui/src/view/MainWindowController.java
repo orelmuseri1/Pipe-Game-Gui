@@ -10,9 +10,10 @@ public class MainWindowController implements Initializable{
 	@FXML
 	MazeDisplayer mazeDisplayer;
 	char[][] mazeData= {
-			{'7','L','j'},
-			{' ','F','-'},
-			{' ',' ','|'},
+			{'7','L','j',' ','L'},
+			{' ','F','-','s','L'},
+			{'g',' ','|','L'},
+			{'F','-','|','L'},
 	};
 
 	@Override
