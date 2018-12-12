@@ -11,9 +11,10 @@ public class MainWindowController implements Initializable{
 	MazeDisplayer mazeDisplayer;
 	char[][] mazeData= {
 			{'7','L','j',' ','L'},
-			{' ','F','-','s','L'},
-			{'g',' ','|','L'},
-			{'F','-','|','L'},
+			{' ','F','-','s',' '},
+			{'g','j','|','L','7'},
+			{'F','-','|','L','-'},
+			{' ','j','|','L','-'},
 	};
 
 	@Override

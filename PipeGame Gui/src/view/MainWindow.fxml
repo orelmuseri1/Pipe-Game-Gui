@@ -30,6 +30,11 @@
       </MenuBar>
    </top>
    <center> 
-      <MazeDisplayer fx:id="mazeDisplayer" height="380.0" width="380.0" BorderPane.alignment="CENTER" />
+      <MazeDisplayer fx:id="mazeDisplayer" height="380.0" width="380.0" BorderPane.alignment="CENTER" 
+         startFileName = 		"./resources/s.jpg" 
+      	 goalFileName=			"./resources/g.jpg"  
+      	 anglePipeFileName=		"./resources/L.jpg"
+      	 verticalPipeFileName=	"./resources/-.jpg"
+      	 backgroundFileName= 	"./resources/background.jpg"/>
    </center>
 </BorderPane>
