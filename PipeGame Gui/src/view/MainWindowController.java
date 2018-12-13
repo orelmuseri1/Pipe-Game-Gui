@@ -15,8 +15,12 @@ import java.util.ResourceBundle;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class MainWindowController implements Initializable,Observer{
 	@FXML
@@ -112,6 +116,8 @@ public class MainWindowController implements Initializable,Observer{
 
 		outFile.close();
 	}
+	
+
 
 	@Override
 	public void update(java.util.Observable o, Object arg) {
