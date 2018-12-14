@@ -5,17 +5,21 @@ import java.io.FileNotFoundException;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
 
-public class MazeDisplayer extends Canvas{
-	char[][] mazeData;
+public class PipeDisplayer extends Canvas{
+	char[][] pipeData;
 	private StringProperty backgroundFileName=null;
 	private StringProperty startFileName=null;
 	private StringProperty goalFileName=null;
@@ -24,15 +28,15 @@ public class MazeDisplayer extends Canvas{
 	private Image Lp = null, widthLine=null, highLine=null ,jp=null ,Fp=null, seven=null, background= null, sp=null,gp=null;
 	
 	//==================================================SETTERS AND GETTERS=====================================================//
-	public MazeDisplayer() {
+	public PipeDisplayer() {
 		this.backgroundFileName = new SimpleStringProperty();
 		this.startFileName = new SimpleStringProperty();
 		this.goalFileName = new SimpleStringProperty();
 		this.anglePipeFileName = new SimpleStringProperty();
 		this.verticalPipeFileName = new SimpleStringProperty();
 			}
-	void setMazeData(char[][] mazeData) {
-		this.mazeData=mazeData;
+	void setMazeData(char[][] pipeData) {
+		this.pipeData=pipeData;
 	 //   widthProperty().addListener(evt -> redraw());
      //   heightProperty().addListener(evt -> redraw());
 		try {
@@ -142,17 +146,63 @@ public class MazeDisplayer extends Canvas{
 		}
     }
     
-	void redraw() throws FileNotFoundException {
-		if(mazeData!=null) {
-			double W= getWidth();
-			double H = getHeight();
-			double w= (W / mazeData[0].length);
-			double h= (H / mazeData.length);
-			GraphicsContext gc=getGraphicsContext2D();
-			gc.clearRect(0, 0, W, H);
-			
-			//=======================load all the pictuers	===============================//
-			try {
+    
+    
+    void click(double x,double y) {
+    	double W= getWidth();
+		double H = getHeight();
+		double w= (W / pipeData[0].length);
+		double h= (H / pipeData.length);
+		
+    	for(double i=0;i<pipeData.length;i++)
+		{
+			for (double j=0;j<pipeData[(int) i].length;j++)
+			{
+				
+				if((y>i*h && y<i*h+h )&&(x>j*w && x<j*w+w)) {
+					switch (pipeData[(int) i][(int) j]) {
+					case 'L':
+						pipeData[(int) i][(int) j]= 'F' ;
+						break;
+					case 'j':
+						pipeData[(int) i][(int) j]='L';
+						break;
+					case '-':
+						pipeData[(int) i][(int) j]='|';
+						break;
+					case '|':
+						pipeData[(int) i][(int) j]='-';
+						break;
+					case 'F':
+						pipeData[(int) i][(int) j]='7';
+						break;
+					case '7':
+						pipeData[(int) i][(int) j]='j';
+						break;
+					case 's':
+						pipeData[(int) i][(int) j]='s';
+						break;
+					case 'g':
+						pipeData[(int) i][(int) j]='g';
+						break;
+					default:
+						break;
+						}
+			}
+		}
+    	 try {
+			redraw();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+    	
+    }
+    	
+    	//=======================load all the pictuers	===============================//
+    void loadPictuer() {
+    	try {
 			SnapshotParameters params = new SnapshotParameters();
 			params.setFill(Color.TRANSPARENT);
 
@@ -176,68 +226,24 @@ public class MazeDisplayer extends Canvas{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			/*
-			try {
-				sp = new Image(new FileInputStream("./resources/s.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	try {
-				gp = new Image(new FileInputStream("./resources/g.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				Lp = new Image(new FileInputStream("./resources/L.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 widthLine = new Image(new FileInputStream("./resources/-.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 highLine = new Image(new FileInputStream("./resources/|.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 jp = new Image(new FileInputStream("./resources/j.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 Fp = new Image(new FileInputStream("./resources/F.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 seven = new Image(new FileInputStream("./resources/7.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				 nothing = new Image(new FileInputStream("./resources/nothing.jpg"));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-			//paint the game
+    	}
+    
+	void redraw() throws FileNotFoundException {
+		if(pipeData!=null) {
+			double W= getWidth();
+			double H = getHeight();
+			double w= (W / pipeData[0].length);
+			double h= (H / pipeData.length);
+			GraphicsContext gc=getGraphicsContext2D();
+			gc.clearRect(0, 0, W, H);
+			loadPictuer();
+			//============================paint the game===============================//
 			Image pipeImage;
-			for(int i=0;i<mazeData.length;i++)
+			for(int i=0;i<pipeData.length;i++)
 			{
-				for (int j=0;j<mazeData[i].length;j++)
+				for (int j=0;j<pipeData[i].length;j++)
 				{
-					switch (mazeData[i][j]) {
+					switch (pipeData[i][j]) {
 					case 'L':
 						pipeImage=Lp;
 						gc.drawImage(Lp, j*w, i*h, w, h);

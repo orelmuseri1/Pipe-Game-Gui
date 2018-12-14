@@ -11,21 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class MainWindowController implements Initializable,Observer{
+	static String IP;
+	static int PORT;
 	@FXML
-	MazeDisplayer mazeDisplayer;
-	char[][] mazeData= {
+	PipeDisplayer pipeDisplayer;
+	char[][] pipeData= {
 			{'7','L','j',' ','L'},
 			{' ','F','-','s',' '},
 			{'g','j','|','L','7'},
@@ -34,7 +42,19 @@ public class MainWindowController implements Initializable,Observer{
 	};
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		mazeDisplayer.setMazeData(mazeData);
+		pipeDisplayer.setMazeData(pipeData);
+	 pipeDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e)->pipeDisplayer.requestFocus());
+
+		  EventHandler<MouseEvent> circleOnMouseEventHandler = new EventHandler<MouseEvent>() {
+			  
+			@Override
+			public void handle(MouseEvent event) {
+			double x=event.getSceneX();
+			double y=event.getSceneY();
+			pipeDisplayer.click(x,y);
+			}
+		};
+		 pipeDisplayer.setOnMouseClicked(circleOnMouseEventHandler);
 	}
 
 	public void start() {
@@ -80,7 +100,7 @@ public class MainWindowController implements Initializable,Observer{
 			}
 
 			char[][] charArray = lines.toArray(new char[lines.size()][]);
-			mazeDisplayer.setMazeData(charArray);
+			pipeDisplayer.setMazeData(charArray);
 		}
 	}
 
@@ -107,16 +127,37 @@ public class MainWindowController implements Initializable,Observer{
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < mazeData.length; i++) {
-			for (int j = 0; j < mazeData[i].length; j++) {
-				outFile.print(mazeData[i][j]);
+		for (int i = 0; i < pipeData.length; i++) {
+			for (int j = 0; j < pipeData[i].length; j++) {
+				outFile.print(pipeData[i][j]);
 			}
 			outFile.println();
 		}
 
 		outFile.close();
 	}
+	public void edit() {
+		try {
+			System.out.println("you get to the edit func\n");
+	        FXMLLoader fxmlLoader = new FXMLLoader();
+	        fxmlLoader.setLocation(getClass().getResource("/view/MainWindow.fxml"));
+	        System.out.println("you get to the edit func\n");
+	        /* 
+	         * if "fx:controller" is not set in fxml
+	         * fxmlLoader.setController(NewWindowController);
+	         */
+	        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+	        System.out.println("you get to the edit func\n");
+	        Stage stage = new Stage();
+	        stage.setTitle("EDIT_IP_AND_PORT");
+	        stage.setScene(scene);
+	        stage.show();
+	    } catch (IOException e) {
+	        Logger logger = Logger.getLogger(getClass().getName());
+	        logger.log(Level.SEVERE, "Failed to create new Window.", e);
+	    }
 	
+	}
 
 
 	@Override
