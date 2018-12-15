@@ -20,4 +20,11 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>resources/icy_tower.mp3</name>
+			<type>1</type>
+			<location>/Users/orelmuseri1/Downloads/icy_tower.mp3</location>
+		</link>
+	</linkedResources>
 </projectDescription>

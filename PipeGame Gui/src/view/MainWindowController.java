@@ -34,17 +34,17 @@ public class MainWindowController implements Initializable,Observer{
 	@FXML
 	PipeDisplayer pipeDisplayer;
 	char[][] pipeData= {
-			{'7','L','j',' ','L'},
-			{' ','F','-','s',' '},
-			{'g','j','|','L','7'},
+			{'s','L','j',' ','L'},
+			{'L','F','-','-',' '},
+			{'7','j','|','L','7'},
 			{'F','-','|','L','-'},
-			{' ','j','|','L','-'},
+			{' ','j','|','L','g'},
 	};
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		pipeDisplayer.setMazeData(pipeData);
 	 pipeDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e)->pipeDisplayer.requestFocus());
-
 		  EventHandler<MouseEvent> circleOnMouseEventHandler = new EventHandler<MouseEvent>() {
 			  
 			@Override

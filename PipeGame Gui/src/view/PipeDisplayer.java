@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
@@ -15,8 +16,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
+import javafx.application.Application;
+import javafx.application.HostServices;
 
 public class PipeDisplayer extends Canvas{
 	char[][] pipeData;
@@ -27,18 +33,19 @@ public class PipeDisplayer extends Canvas{
 	private StringProperty verticalPipeFileName=null;
 	private Image Lp = null, widthLine=null, highLine=null ,jp=null ,Fp=null, seven=null, background= null, sp=null,gp=null;
 	
-	//==================================================SETTERS AND GETTERS=====================================================//
-	public PipeDisplayer() {
+	
+		public PipeDisplayer() {
 		this.backgroundFileName = new SimpleStringProperty();
 		this.startFileName = new SimpleStringProperty();
 		this.goalFileName = new SimpleStringProperty();
 		this.anglePipeFileName = new SimpleStringProperty();
 		this.verticalPipeFileName = new SimpleStringProperty();
+		play();
 			}
+	//==================================================SETTERS AND GETTERS=====================================================//
+
 	void setMazeData(char[][] pipeData) {
 		this.pipeData=pipeData;
-	 //   widthProperty().addListener(evt -> redraw());
-     //   heightProperty().addListener(evt -> redraw());
 		try {
 			redraw();
 		} catch (FileNotFoundException e) {
@@ -95,8 +102,6 @@ public class PipeDisplayer extends Canvas{
 	public void setVerticalPipeFileName(String verticalPipeFileName) {
 		this.verticalPipeFileName.setValue(verticalPipeFileName);
 	}
-
-	
 	//==================================================OVERRIDE FOR RESIZABLE=====================================================//
 	@Override
 	public boolean isResizable() {
@@ -146,20 +151,20 @@ public class PipeDisplayer extends Canvas{
 		}
     }
     
-    
+    //==========================================swap part in the game on click func============================================//
     
     void click(double x,double y) {
     	double W= getWidth();
 		double H = getHeight();
 		double w= (W / pipeData[0].length);
 		double h= (H / pipeData.length);
-		
-    	for(double i=0;i<pipeData.length;i++)
-		{
+		y-=h/pipeData.length;
+    	for(double i=0;i<pipeData.length;i++)	{
 			for (double j=0;j<pipeData[(int) i].length;j++)
 			{
 				
-				if((y>i*h && y<i*h+h )&&(x>j*w && x<j*w+w)) {
+				if( (y>=i*h && y<=i*h+h )&&
+					(x>=j*w && x<=j*w+w )) {
 					switch (pipeData[(int) i][(int) j]) {
 					case 'L':
 						pipeData[(int) i][(int) j]= 'F' ;
@@ -200,7 +205,7 @@ public class PipeDisplayer extends Canvas{
     	
     }
     	
-    	//=======================load all the pictuers	===============================//
+    	//==================================================load all the pictuers	=======================================================//
     void loadPictuer() {
     	try {
 			SnapshotParameters params = new SnapshotParameters();
@@ -227,7 +232,7 @@ public class PipeDisplayer extends Canvas{
 			e.printStackTrace();
 		}
     	}
-    
+    		//================================================paint the game==================================================//
 	void redraw() throws FileNotFoundException {
 		if(pipeData!=null) {
 			double W= getWidth();
@@ -237,7 +242,6 @@ public class PipeDisplayer extends Canvas{
 			GraphicsContext gc=getGraphicsContext2D();
 			gc.clearRect(0, 0, W, H);
 			loadPictuer();
-			//============================paint the game===============================//
 			Image pipeImage;
 			for(int i=0;i<pipeData.length;i++)
 			{
@@ -284,12 +288,20 @@ public class PipeDisplayer extends Canvas{
 						break;
 						
 					}
-
 					if(pipeImage!=null)
 					gc.drawImage(pipeImage, j*w, i*h, w, h);
+					
 				}
-			}	
+			}
 		}
+	}
+	void play() {
+		String musicFile = "./resources/icy_tower.mp3";  
+		Media sound = new Media(new File(musicFile).toURI().toString());
+		MediaPlayer mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.setCycleCount(5);
+			mediaPlayer.play();
+		
 	}
 }
 
