@@ -295,6 +295,7 @@ public class PipeDisplayer extends Canvas{
 			}
 		}
 	}
+	
 	void play() {
 		String musicFile = "./resources/icy_tower.mp3";  
 		Media sound = new Media(new File(musicFile).toURI().toString());

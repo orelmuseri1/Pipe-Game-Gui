@@ -138,16 +138,13 @@ public class MainWindowController implements Initializable,Observer{
 	}
 	public void edit() {
 		try {
-			System.out.println("you get to the edit func\n");
 	        FXMLLoader fxmlLoader = new FXMLLoader();
 	        fxmlLoader.setLocation(getClass().getResource("/view/MainWindow.fxml"));
-	        System.out.println("you get to the edit func\n");
 	        /* 
 	         * if "fx:controller" is not set in fxml
 	         * fxmlLoader.setController(NewWindowController);
 	         */
 	        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-	        System.out.println("you get to the edit func\n");
 	        Stage stage = new Stage();
 	        stage.setTitle("EDIT_IP_AND_PORT");
 	        stage.setScene(scene);
