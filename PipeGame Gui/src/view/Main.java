@@ -1,13 +1,11 @@
 package view;
 	
-import java.io.File;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.PipeGameModel;
+import viewmodel.pipeGameViewModel;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.fxml.FXMLLoader;
 
 
@@ -26,7 +24,6 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-
 		launch(args);
 	}
 }

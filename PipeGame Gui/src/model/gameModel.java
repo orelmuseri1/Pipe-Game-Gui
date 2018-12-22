@@ -1,7 +1,10 @@
 package model;
 
-public interface gameModel {
+import javafx.beans.property.StringProperty;
 
-	public void solveGame(char [][] gameData);
-	public char [][] getSolution();
+public interface gameModel {
+	public void solveGame();
+	public StringProperty[][] getSolution();
+	public StringProperty getItemState(int i, int j);
+	public void itemPressed(int i, int j);
 }

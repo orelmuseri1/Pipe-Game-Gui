@@ -21,11 +21,14 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.HostServices;
 
 public class PipeDisplayer extends Canvas{
 	char[][] pipeData;
+	int numOfRows;
+	int numOfCols;
 	private StringProperty backgroundFileName=null;
 	private StringProperty startFileName=null;
 	private StringProperty goalFileName=null;
@@ -44,10 +47,15 @@ public class PipeDisplayer extends Canvas{
 			}
 	//==================================================SETTERS AND GETTERS=====================================================//
 
-	void setMazeData(char[][] pipeData) {
-		this.pipeData=pipeData;
+	void setMazeData(StringProperty[][] pipeData,int numOfRows,int numOfCols) {
 		try {
-			redraw();
+			this.numOfRows = numOfRows;
+			this.numOfCols = numOfCols;
+			this.pipeData = new char[numOfRows][numOfCols];
+			for (int i = 0 ;i < this.numOfRows; ++i)
+				for (int j =0 ; j < this.numOfCols; ++j)
+					this.pipeData[i][j] = pipeData[i][j].get().charAt(0);
+			this.redraw();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,60 +159,6 @@ public class PipeDisplayer extends Canvas{
 		}
     }
     
-    //==========================================swap part in the game on click func============================================//
-    
-    void click(double x,double y) {
-    	double W= getWidth();
-		double H = getHeight();
-		double w= (W / pipeData[0].length);
-		double h= (H / pipeData.length);
-		y-=h/pipeData.length;
-    	for(double i=0;i<pipeData.length;i++)	{
-			for (double j=0;j<pipeData[(int) i].length;j++)
-			{
-				
-				if( (y>=i*h && y<=i*h+h )&&
-					(x>=j*w && x<=j*w+w )) {
-					switch (pipeData[(int) i][(int) j]) {
-					case 'L':
-						pipeData[(int) i][(int) j]= 'F' ;
-						break;
-					case 'j':
-						pipeData[(int) i][(int) j]='L';
-						break;
-					case '-':
-						pipeData[(int) i][(int) j]='|';
-						break;
-					case '|':
-						pipeData[(int) i][(int) j]='-';
-						break;
-					case 'F':
-						pipeData[(int) i][(int) j]='7';
-						break;
-					case '7':
-						pipeData[(int) i][(int) j]='j';
-						break;
-					case 's':
-						pipeData[(int) i][(int) j]='s';
-						break;
-					case 'g':
-						pipeData[(int) i][(int) j]='g';
-						break;
-					default:
-						break;
-						}
-			}
-		}
-    	 try {
-			redraw();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		}
-    	
-    }
-    	
     	//==================================================load all the pictuers	=======================================================//
     void loadPictuer() {
     	try {
@@ -295,14 +249,13 @@ public class PipeDisplayer extends Canvas{
 			}
 		}
 	}
-	
+
 	void play() {
 		String musicFile = "./resources/icy_tower.mp3";  
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		MediaPlayer mediaPlayer = new MediaPlayer(sound);
 		mediaPlayer.setCycleCount(5);
-			mediaPlayer.play();
-		
+		mediaPlayer.play();
 	}
 }
 

@@ -14,49 +14,84 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.PipeGameModel;
+import viewmodel.pipeGameViewModel;
 
 public class MainWindowController implements Initializable,Observer{
 	static String IP;
 	static int PORT;
+	int numOfRows;
+	int numOfCols;
+    pipeGameViewModel vm;
+	public StringProperty[][] pipeData;
 	@FXML
 	PipeDisplayer pipeDisplayer;
-	char[][] pipeData= {
-			{'s','L','j',' ','L'},
-			{'L','F','-','-',' '},
-			{'7','j','|','L','7'},
-			{'F','-','|','L','-'},
-			{' ','j','|','L','g'},
-	};
-
+	
+	public void setViewModel(pipeGameViewModel viewModel) {
+		this.vm = new pipeGameViewModel(viewModel);
+		this.pipeData = new StringProperty[viewModel.getNumOfRows()][viewModel.getNumOfCols()];
+		for (int i = 0 ; i < vm.getNumOfRows() ; ++i) {
+			for (int j = 0 ; j < vm.getNumOfCols() ; ++j) {
+				this.pipeData[i][j] = new SimpleStringProperty(vm.mazeState[i][j].get());
+				vm.mazeState[i][j].bindBidirectional(pipeData[i][j]);
+			}
+		}
+	}
+	
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		pipeDisplayer.setMazeData(pipeData);
-	 pipeDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e)->pipeDisplayer.requestFocus());
-		  EventHandler<MouseEvent> circleOnMouseEventHandler = new EventHandler<MouseEvent>() {
-			  
+		
+		  char[][] pipeData= {
+		  {'s','L','j',' ','L'},
+			{'L','F','-','-',' '},
+			{'7','j','|','L','7'},
+			{'F','-','|','L','7'},
+			{' ','j','|','L','g'},
+			};
+		 
+		/*
+		char[][] pipeData = {
+				{'s','L'},
+				{'|','g'}
+		};
+		*/
+		this.numOfRows = 5;
+		this.numOfCols= 5;
+		PipeGameModel pgm = new PipeGameModel(pipeData,numOfRows,numOfCols);
+		this.setViewModel(new pipeGameViewModel(pgm, numOfRows,numOfCols));
+		pgm.addObserver(this.vm);
+		vm.addObserver(this);
+		pipeDisplayer.setMazeData(this.pipeData,numOfRows,numOfCols);
+		pipeDisplayer.addEventFilter(MouseEvent.MOUSE_CLICKED, (e)->pipeDisplayer.requestFocus());
+		EventHandler<MouseEvent> circleOnMouseEventHandler = new EventHandler<MouseEvent>() {	  
 			@Override
 			public void handle(MouseEvent event) {
-			double x=event.getSceneX();
-			double y=event.getSceneY();
-			pipeDisplayer.click(x,y);
+				double x=event.getSceneX();
+				double y=event.getSceneY();
+				MainWindowController.this.click(x, y);
+				//Test
+				for (int i = 0 ; i < numOfRows ; ++i)
+				for (int j = 0 ; j < numOfCols ; ++j) {
+					System.out.print(vm.mazeState[i][j].get() + ",");
+				}
+				System.out.println("\n");
 			}
-		};
+			};
 		 pipeDisplayer.setOnMouseClicked(circleOnMouseEventHandler);
 	}
 
+	
 	public void start() {
 		System.out.println("Start.");
 	}
@@ -100,7 +135,8 @@ public class MainWindowController implements Initializable,Observer{
 			}
 
 			char[][] charArray = lines.toArray(new char[lines.size()][]);
-			pipeDisplayer.setMazeData(charArray);
+			vm.newMaze(charArray,lines.size(),lines.get(0).length);
+			pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 		}
 	}
 
@@ -127,15 +163,25 @@ public class MainWindowController implements Initializable,Observer{
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < pipeData.length; i++) {
-			for (int j = 0; j < pipeData[i].length; j++) {
-				outFile.print(pipeData[i][j]);
+		for (int i = 0; i < vm.getNumOfRows(); i++) {
+			for (int j = 0; j < vm.getNumOfCols(); j++) {
+				outFile.print(vm.mazeState[i][j].get().charAt(0));
 			}
 			outFile.println();
 		}
 
 		outFile.close();
 	}
+	
+	public void solveGame() {
+		try {
+			this.vm.solveGame();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	
 	public void edit() {
 		try {
 	        FXMLLoader fxmlLoader = new FXMLLoader();
@@ -143,7 +189,7 @@ public class MainWindowController implements Initializable,Observer{
 	        /* 
 	         * if "fx:controller" is not set in fxml
 	         * fxmlLoader.setController(NewWindowController);
-	         */
+	         */ 
 	        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 	        Stage stage = new Stage();
 	        stage.setTitle("EDIT_IP_AND_PORT");
@@ -156,11 +202,54 @@ public class MainWindowController implements Initializable,Observer{
 	
 	}
 
+    void click(double x,double y) {
+    	double W= this.pipeDisplayer.getWidth();
+		double H = this.pipeDisplayer.getHeight();
+		double w= (W / pipeData[0].length);
+		double h= (H / pipeData.length);
+		y-=h/pipeData.length;
+    	for(double i=0;i<pipeData.length;i++)	{
+			for (double j=0;j<pipeData[(int) i].length;j++)
+			{
+				if( (y>=i*h && y<=i*h+h ) && (x>=j*w && x<=j*w+w )) {
+					switch (pipeData[(int) i][(int) j].get().charAt(0)) {
+					case 'L':
+						pipeData[(int) i][(int) j].set(Character.toString('F'));
+						break;
+					case 'j':
+						pipeData[(int) i][(int) j].set(Character.toString('L'));
+						break;
+					case '-':
+						pipeData[(int) i][(int) j].set(Character.toString('|'));
+						break;
+					case '|':
+						pipeData[(int) i][(int) j].set(Character.toString('-'));
+						break;
+					case 'F':
+						pipeData[(int) i][(int) j].set(Character.toString('7'));
+						break;
+					case '7':
+						pipeData[(int) i][(int) j].set(Character.toString('j'));
+						break;
+					case 's':
+						pipeData[(int) i][(int) j].set(Character.toString('s'));
+						break;
+					case 'g':
+						pipeData[(int) i][(int) j].set(Character.toString('g'));
+						break;
+					default:
+						break;
+						}
+					}
+				}
+			pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
+			}
+    	}
 
 	@Override
 	public void update(java.util.Observable o, Object arg) {
 		// TODO Auto-generated method stub
-		
+		pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 	}
 
 
