@@ -21,7 +21,7 @@ public class pipeGameViewModel extends Observable implements Observer {
 		this.mazeState = new StringProperty[numOfRows][numOfCols];
 		for (int i = 0 ; i < numOfRows ; ++i)
 			for (int j = 0 ; j < numOfCols ; ++j) {
-				this.mazeState[i][j] = new SimpleStringProperty(m.getItemState(i, j).get()); 
+				this.mazeState[i][j] = new SimpleStringProperty(model.getItemState(i, j).get()); 
 				this.mazeState[i][j].bindBidirectional(model.getItemState(i,j));
 			}
 		

@@ -52,22 +52,13 @@ public class MainWindowController implements Initializable,Observer{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		  char[][] pipeData= {
-		  {'s','L','j',' ','L'},
-			{'L','F','-','-',' '},
-			{'7','j','|','L','7'},
-			{'F','-','|','L','7'},
-			{' ','j','|','L','g'},
-			};
-		 
-		/*
 		char[][] pipeData = {
 				{'s','L'},
 				{'|','g'}
 		};
-		*/
-		this.numOfRows = 5;
-		this.numOfCols= 5;
+		
+		this.numOfRows = 2;
+		this.numOfCols= 2;
 		PipeGameModel pgm = new PipeGameModel(pipeData,numOfRows,numOfCols);
 		this.setViewModel(new pipeGameViewModel(pgm, numOfRows,numOfCols));
 		pgm.addObserver(this.vm);
@@ -81,11 +72,11 @@ public class MainWindowController implements Initializable,Observer{
 				double y=event.getSceneY();
 				MainWindowController.this.click(x, y);
 				//Test
-				for (int i = 0 ; i < numOfRows ; ++i)
+			/*	for (int i = 0 ; i < numOfRows ; ++i)
 				for (int j = 0 ; j < numOfCols ; ++j) {
 					System.out.print(vm.mazeState[i][j].get() + ",");
 				}
-				System.out.println("\n");
+				System.out.println("\n");*/
 			}
 			};
 		 pipeDisplayer.setOnMouseClicked(circleOnMouseEventHandler);

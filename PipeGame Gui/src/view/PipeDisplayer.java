@@ -54,8 +54,8 @@ public class PipeDisplayer extends Canvas{
 			this.pipeData = new char[numOfRows][numOfCols];
 			for (int i = 0 ;i < this.numOfRows; ++i)
 				for (int j =0 ; j < this.numOfCols; ++j)
-					this.pipeData[i][j] = pipeData[i][j].get().charAt(0);
-			this.redraw();
+					this.pipeData[i][j] = pipeData[i][j].getValue().charAt(0);
+			redraw();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -254,7 +254,7 @@ public class PipeDisplayer extends Canvas{
 		String musicFile = "./resources/icy_tower.mp3";  
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		MediaPlayer mediaPlayer = new MediaPlayer(sound);
-		mediaPlayer.setCycleCount(5);
+		mediaPlayer.setCycleCount(15);
 		mediaPlayer.play();
 	}
 }
