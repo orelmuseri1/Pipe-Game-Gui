@@ -29,7 +29,7 @@ public class PipeGameModel extends Observable implements gameModel {
 				this.PipeBoardState[i][j] = new SimpleStringProperty(Character.toString(board[i][j]));
 			}
 		 try {
-			getSolutionFromServer();
+			this.gameSolution.set(getSolutionFromServer());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
