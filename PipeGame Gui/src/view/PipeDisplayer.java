@@ -206,7 +206,7 @@ public class PipeDisplayer extends Canvas{
 						pipeImage=Lp;
 						gc.drawImage(Lp, j*w, i*h, w, h);
 						break;
-					case 'j':
+					case 'J':
 						pipeImage=jp;
 						gc.drawImage(jp, j*w, i*h, w, h);
 						break;

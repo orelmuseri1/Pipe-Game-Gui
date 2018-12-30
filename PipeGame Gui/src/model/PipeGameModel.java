@@ -28,7 +28,7 @@ public class PipeGameModel extends Observable implements gameModel {
 			for (int j = 0 ; j < numOfCols; ++j) {
 				this.PipeBoardState[i][j] = new SimpleStringProperty(Character.toString(board[i][j]));
 			}
-		 try {
+		try {
 			this.gameSolution.set(getSolutionFromServer());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -37,60 +37,55 @@ public class PipeGameModel extends Observable implements gameModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
 	/*
 	 * getSolutionFromServer will you send the pipeBoardState  
 	 * board and will receive back the solution.
 	 */
-	private char[][] getSolutionFromServer() throws UnknownHostException, IOException {
-	     Socket theServer = new Socket("localhost", 17000);
-	        System.out.println("Connected to server");
-	        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-	        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
-	        PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
-	        String problem = "";
-	        for(int i=0;i < this.numOfRows;i++) {
-        		for(int j=0;j<this.numOfCols;j++){
-        			problem+=this.PipeBoardState[i][j].getValue();
-        		}
-        		if(i != this.numOfRows-1)
-        			problem += "\r\n";
-        	}
-	        
-	        System.out.println(problem);
-	       outToServer.println(problem);
-	        outToServer.flush();
-	        outToServer.println("done");
-	        outToServer.flush();
-	        this.gameSolution.setValue(inFromServer.readLine());
-	       System.out.println(this.gameSolution.getValue());
-	        outToServer.println("done");
-	        outToServer.flush();
-	        inFromServer.close();
-	        outToServer.close();
-	        inFromUser.close();
-	        theServer.close();
-	        return null;     //this.gameSolution.getValue()
+	private String getSolutionFromServer() throws UnknownHostException, IOException {
+	    Socket theServer = new Socket("localhost", 10000);
+        System.out.println("Connected to server");
+	    BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
+        PrintWriter outToServer = new PrintWriter(theServer.getOutputStream());
+        String problem = "";
+        for(int i=0;i < this.numOfRows;i++) {
+    		for(int j=0;j<this.numOfCols;j++){
+    			problem+=this.PipeBoardState[i][j].getValue();
+    		}
+    		if(i != this.numOfRows-1)
+    			problem += "\r\n";
+    	}   
+        System.out.println(problem);
+        outToServer.println(problem);
+        outToServer.flush();
+        outToServer.println("done");
+        outToServer.flush();
+        this.gameSolution.setValue(inFromServer.readLine());
+        System.out.println(this.gameSolution.getValue());
+        outToServer.println("done");
+        outToServer.flush();
+        inFromServer.close();
+        outToServer.close();
+        inFromUser.close();
+        theServer.close();
+        return null;     //this.gameSolution.getValue()
 	}
 
 	@Override
 	public void solveGame() {
-		// made for test only solution should come form server
-
-		char[][] solution ={
-		{'s','7'},
-		{'|','g'}
-		};
-		for (int i = 0 ; i < numOfRows; ++i)
-			for (int j = 0 ; j < numOfCols; ++j)
-				
-				if (PipeBoardState[i][j].get().charAt(0) != solution[i][j]) {
-					this.itemPressed(i, j);
-					--j;
-				}
-		System.out.println("Game Solved");	
+		try {
+			this.gameSolution.set(getSolutionFromServer());
+			System.out.println("My print");
+			System.out.println(this.gameSolution.getValue());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	@Override
@@ -134,7 +129,7 @@ public class PipeGameModel extends Observable implements gameModel {
 				this.PipeBoardState[i][j].set(Character.toString('7'));
 				break;
 			case '7':
-				this.PipeBoardState[i][j].set(Character.toString('j'));
+				this.PipeBoardState[i][j].set(Character.toString('J'));
 				break;
 			case 's':
 				this.PipeBoardState[i][j].set(Character.toString('s'));

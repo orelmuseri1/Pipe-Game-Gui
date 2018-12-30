@@ -53,12 +53,12 @@ public class MainWindowController implements Initializable,Observer{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		char[][] pipeData = {
-				{'s','L'},
-				{'|','g'}
+				{'s','|','L'},
+				{'|','L','g'}
 		};
 		
 		this.numOfRows = 2;
-		this.numOfCols= 2;
+		this.numOfCols= 3;
 		PipeGameModel pgm = new PipeGameModel(pipeData,numOfRows,numOfCols);
 		this.setViewModel(new pipeGameViewModel(pgm, numOfRows,numOfCols));
 		pgm.addObserver(this.vm);
@@ -207,7 +207,7 @@ public class MainWindowController implements Initializable,Observer{
 					case 'L':
 						pipeData[(int) i][(int) j].set(Character.toString('F'));
 						break;
-					case 'j':
+					case 'J':
 						pipeData[(int) i][(int) j].set(Character.toString('L'));
 						break;
 					case '-':
@@ -220,7 +220,7 @@ public class MainWindowController implements Initializable,Observer{
 						pipeData[(int) i][(int) j].set(Character.toString('7'));
 						break;
 					case '7':
-						pipeData[(int) i][(int) j].set(Character.toString('j'));
+						pipeData[(int) i][(int) j].set(Character.toString('J'));
 						break;
 					case 's':
 						pipeData[(int) i][(int) j].set(Character.toString('s'));
