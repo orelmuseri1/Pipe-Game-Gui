@@ -28,15 +28,7 @@ public class PipeGameModel extends Observable implements gameModel {
 			for (int j = 0 ; j < numOfCols; ++j) {
 				this.PipeBoardState[i][j] = new SimpleStringProperty(Character.toString(board[i][j]));
 			}
-		try {
-			this.gameSolution.set(getSolutionFromServer());
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.gameSolution.set("");
 	}
 
 	/*
@@ -57,28 +49,30 @@ public class PipeGameModel extends Observable implements gameModel {
     		if(i != this.numOfRows-1)
     			problem += "\r\n";
     	}   
-        System.out.println(problem);
+        //System.out.println(problem);
         outToServer.println(problem);
         outToServer.flush();
         outToServer.println("done");
         outToServer.flush();
-        this.gameSolution.setValue(inFromServer.readLine());
-        System.out.println(this.gameSolution.getValue());
+        String solution = inFromServer.readLine();
         outToServer.println("done");
         outToServer.flush();
         inFromServer.close();
         outToServer.close();
         inFromUser.close();
         theServer.close();
-        return null;     //this.gameSolution.getValue()
+        return solution;     //this.gameSolution.getValue()
 	}
 
 	@Override
 	public void solveGame() {
 		try {
 			this.gameSolution.set(getSolutionFromServer());
-			System.out.println("My print");
-			System.out.println(this.gameSolution.getValue());
+			String[] solution = (this.gameSolution.getValue()).split(",");
+			for (int i = 0 ; i < solution.length; i += 3) {
+				for (int j = 0 ; j < Integer.parseInt(solution[i+2]); ++j)
+					itemPressed(Integer.parseInt(solution[i]), Integer.parseInt(solution[i+1]));
+			}
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -116,7 +110,7 @@ public class PipeGameModel extends Observable implements gameModel {
 			case 'L':
 				this.PipeBoardState[i][j].set(Character.toString('F'));
 				break;
-			case 'j':
+			case 'J':
 				this.PipeBoardState[i][j].set(Character.toString('L'));
 				break;
 			case '-':

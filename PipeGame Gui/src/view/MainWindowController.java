@@ -53,7 +53,7 @@ public class MainWindowController implements Initializable,Observer{
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		char[][] pipeData = {
-				{'s','|','L'},
+				{'s','J','L'},
 				{'|','L','g'}
 		};
 		
