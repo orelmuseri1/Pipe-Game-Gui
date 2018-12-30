@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -67,16 +68,31 @@ public class PipeGameModel extends Observable implements gameModel {
 	@Override
 	public void solveGame() {
 		try {
+			
+			/*
+			 * Here we will get solution from the server as a string,
+			 * we will split the string by , to get a list of numbers.
+			 * we will cast the numbers to int so we could you them for 
+			 * the itemPressed function which will rotate our board.
+			 */
+			
 			this.gameSolution.set(getSolutionFromServer());
 			String[] solution = (this.gameSolution.getValue()).split(",");
 			for (int i = 0 ; i < solution.length; i += 3) {
-				for (int j = 0 ; j < Integer.parseInt(solution[i+2]); ++j)
-					itemPressed(Integer.parseInt(solution[i]), Integer.parseInt(solution[i+1]));
+				for (int j = 0 ; j < Integer.parseInt(solution[i+2]); ++j) {
+					int rowToPress = Integer.parseInt(solution[i]);
+					int colToPress = Integer.parseInt(solution[i+1]);
+					Platform.runLater(() -> itemPressed(rowToPress, colToPress));
+					Thread.sleep(500);
+					}
 			}
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
@@ -138,12 +154,6 @@ public class PipeGameModel extends Observable implements gameModel {
 			// This next to lines will notify the viewModel that will next change the view
 			setChanged();
 			notifyObservers();
-			try {
-				Thread.sleep(200);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override

@@ -1,29 +1,19 @@
 package view;
 
 import java.io.File;
+import static javafx.scene.media.AudioClip.INDEFINITE;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.fxml.FXML;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.stage.Window;
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.application.HostServices;
 
 public class PipeDisplayer extends Canvas{
 	char[][] pipeData;
@@ -254,8 +244,9 @@ public class PipeDisplayer extends Canvas{
 		String musicFile = "./resources/icy_tower.mp3";  
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		MediaPlayer mediaPlayer = new MediaPlayer(sound);
-		mediaPlayer.setCycleCount(15);
-		mediaPlayer.play();
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.setCycleCount(INDEFINITE);
 	}
+
 }
 

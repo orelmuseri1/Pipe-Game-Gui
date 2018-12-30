@@ -28,8 +28,7 @@ import model.PipeGameModel;
 import viewmodel.pipeGameViewModel;
 
 public class MainWindowController implements Initializable,Observer{
-	static String IP;
-	static int PORT;
+	private int theme = 1;
 	int numOfRows;
 	int numOfCols;
     pipeGameViewModel vm;
@@ -71,12 +70,6 @@ public class MainWindowController implements Initializable,Observer{
 				double x=event.getSceneX();
 				double y=event.getSceneY();
 				MainWindowController.this.click(x, y);
-				//Test
-			/*	for (int i = 0 ; i < numOfRows ; ++i)
-				for (int j = 0 ; j < numOfCols ; ++j) {
-					System.out.print(vm.mazeState[i][j].get() + ",");
-				}
-				System.out.println("\n");*/
 			}
 			};
 		 pipeDisplayer.setOnMouseClicked(circleOnMouseEventHandler);
@@ -172,6 +165,19 @@ public class MainWindowController implements Initializable,Observer{
 			e.printStackTrace();
 		}
 	}
+	
+	public void theme1() {
+		if (this.theme != 1) {
+			this.theme = 1;
+			//this.pipeDisplayer = new PipeDisplayer(1);
+		}
+	};
+
+	public void theme2() {
+		if (this.theme != 2) {
+			this.theme = 2;
+			//this.pipeDisplayer = new PipeDisplayer(2);
+	}};
 	
 	public void edit() {
 		try {

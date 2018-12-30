@@ -28,6 +28,12 @@
               <MenuItem mnemonicParsing="false" text="other" />
             </items>
           </Menu>
+          <Menu mnemonicParsing="view" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction='#theme1' text="theme 1" />
+              <MenuItem mnemonicParsing="false" onAction='#theme2' text="theme 2" />
+            </items>
+          </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
