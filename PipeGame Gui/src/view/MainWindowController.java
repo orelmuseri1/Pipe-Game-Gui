@@ -38,6 +38,7 @@ public class MainWindowController implements Initializable,Observer{
     pipeGameViewModel vm;
 	public StringProperty[][] pipeData;
 	IntegerProperty time; // Time pass since game start
+	public IntegerProperty numberOfSteps; // number of steps made since game start
 	@FXML
 	PipeDisplayer pipeDisplayer;
 	
@@ -52,6 +53,9 @@ public class MainWindowController implements Initializable,Observer{
 		}
 		this.time = new SimpleIntegerProperty();
 		this.time.bind(this.vm.time);
+		this.numberOfSteps = new SimpleIntegerProperty();
+		this.numberOfSteps.bindBidirectional(this.vm.numberOfSteps);
+	
 	}
 	
 	
@@ -191,8 +195,7 @@ public class MainWindowController implements Initializable,Observer{
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Game Status");
 		alert.setHeaderText(null);
-		alert.setContentText("Time:  " + this.time.get() + " Seconds");
-
+		alert.setContentText("Time:  " + this.time.get() + " Seconds\n" +"Moves made:  " + this.numberOfSteps.get());
 		alert.showAndWait();
 	}
 	
@@ -229,21 +232,27 @@ public class MainWindowController implements Initializable,Observer{
 					switch (pipeData[(int) i][(int) j].get().charAt(0)) {
 					case 'L':
 						pipeData[(int) i][(int) j].set(Character.toString('F'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case 'J':
 						pipeData[(int) i][(int) j].set(Character.toString('L'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case '-':
 						pipeData[(int) i][(int) j].set(Character.toString('|'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case '|':
 						pipeData[(int) i][(int) j].set(Character.toString('-'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case 'F':
 						pipeData[(int) i][(int) j].set(Character.toString('7'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case '7':
 						pipeData[(int) i][(int) j].set(Character.toString('J'));
+						this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 						break;
 					case 's':
 						pipeData[(int) i][(int) j].set(Character.toString('s'));
@@ -265,7 +274,6 @@ public class MainWindowController implements Initializable,Observer{
     			alert.setTitle("You win!!!!!");
     			alert.setHeaderText(null);
     			alert.setContentText("Great job friend!\nWe knew we can count on you!");
-
     			alert.showAndWait();	
     		}
     	}

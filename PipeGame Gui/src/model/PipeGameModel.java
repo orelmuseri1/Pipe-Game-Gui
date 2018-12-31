@@ -21,7 +21,7 @@ public class PipeGameModel extends Observable implements gameModel {
 	// Properties
 	int numOfRows;
 	int numOfCols;
-	int countMoves; // Number of moves made
+	public IntegerProperty numberOfSteps; // number of steps made since game start
 	public IntegerProperty time; // Time pass since game start
 	StringProperty[][] PipeBoardState; // Current state of the board.
 	StringProperty gameSolution; // The game end solution given by the server.
@@ -64,6 +64,7 @@ public class PipeGameModel extends Observable implements gameModel {
 		
 		// Set timer
 		this.time = new SimpleIntegerProperty();
+		this.numberOfSteps = new SimpleIntegerProperty(0);
 		timeCounter.scheduleAtFixedRate(task, 1000, 1000);
 	}
 	
@@ -419,7 +420,7 @@ public class PipeGameModel extends Observable implements gameModel {
 			default:
 				break;
 			}
-			++countMoves;
+			this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 			// This next to lines will notify the viewModel that will next change the view
 			setChanged();
 			notifyObservers();

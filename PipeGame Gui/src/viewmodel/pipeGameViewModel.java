@@ -17,6 +17,7 @@ public class pipeGameViewModel extends Observable implements Observer {
 	int numOfCols;
 	public StringProperty[][] mazeState; 
 	public IntegerProperty time; // Time pass since game start
+	public IntegerProperty numberOfSteps; // number of steps made since game start
 	
 	public pipeGameViewModel(PipeGameModel m,int numOfRows,int numOfCols) {
 		this.model = m;
@@ -30,7 +31,9 @@ public class pipeGameViewModel extends Observable implements Observer {
 			}
 		this.time = new SimpleIntegerProperty();
 		this.time.bind(this.model.time);
-		
+		this.numberOfSteps = new SimpleIntegerProperty();
+		this.numberOfSteps.bindBidirectional(this.model.numberOfSteps);
+
 	}
 
 	public pipeGameViewModel(pipeGameViewModel viewModel) {
@@ -46,6 +49,8 @@ public class pipeGameViewModel extends Observable implements Observer {
 			}
 		this.time = new SimpleIntegerProperty();
 		this.time.bind(this.model.time);
+		this.numberOfSteps = new SimpleIntegerProperty();
+		this.numberOfSteps.bindBidirectional(this.model.numberOfSteps);
 	}
 
 	public void itemPressed(int i,int j) {
