@@ -14,23 +14,45 @@ import javafx.beans.property.StringProperty;
 
 public class PipeGameModel extends Observable implements gameModel {
 
+	// Properties
 	int numOfRows;
 	int numOfCols;
 	int countMoves; // Number of moves made
 	StringProperty[][] PipeBoardState; // Current state of the board.
 	StringProperty gameSolution; // The game end solution given by the server.
+	int[] sPos,gPos;
+
+	// CTOR
 	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols) {
-		// TODO Auto-generated constructor stub
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.PipeBoardState = new StringProperty[numOfRows][numOfCols];
 		this.gameSolution=new SimpleStringProperty();
+		this.gameSolution.set("");
+		
+		// Copy board
 		for (int i = 0 ; i < numOfRows; ++i)
 			for (int j = 0 ; j < numOfCols; ++j) {
 				this.PipeBoardState[i][j] = new SimpleStringProperty(Character.toString(board[i][j]));
 			}
-		this.gameSolution.set("");
+		
+		// Search for the s and g, place them in int array, first num is row second is col.
+		this.sPos = new int[2];
+		this.gPos = new int[2];
+		for (int i = 0 ; i < numOfRows; ++i)
+			for (int j = 0 ; j < numOfCols; ++j) {
+				if (this.PipeBoardState[i][j].get().charAt(0) == 's') {
+					sPos[0] = i;
+					sPos[1] = j;
+				}
+				if (this.PipeBoardState[i][j].get().charAt(0) == 'g') {
+					gPos[0] = i;
+					gPos[1] = j;
+				}
+			}
 	}
+	
+	// Methods
 
 	/*
 	 * getSolutionFromServer will you send the pipeBoardState  
@@ -50,7 +72,6 @@ public class PipeGameModel extends Observable implements gameModel {
     		if(i != this.numOfRows-1)
     			problem += "\r\n";
     	}   
-        //System.out.println(problem);
         outToServer.println(problem);
         outToServer.flush();
         outToServer.println("done");
@@ -87,13 +108,10 @@ public class PipeGameModel extends Observable implements gameModel {
 					}
 			}
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
@@ -103,22 +121,258 @@ public class PipeGameModel extends Observable implements gameModel {
 		return this.gameSolution.getValue();
 	}
 	
-	/*
-	 * isSolution responsible on return true or false is the 
-	 * saved state of the pipe game is correct.
-	 * It will run char char and compare Solution
-	 * to saved state.
-	 */
 
-	/*public boolean isSolution() {
-		for (int i = 0 ; i < numOfRows ; ++i)
-			for (int j =0 ; j < numOfCols ; ++j) {
-				if (PipeBoardState[i][j] != gameSolution[i][j])
+	public boolean isSolution() {
+		
+		/*
+		 *  This function will call a recursive function to 
+		 *  any move available from the s position on the current 
+		 *  board state
+		 */
+		
+		for (int i = 0; i < 4 ; i++) {
+			if(validMove(sPos[0],sPos[1],i))
+				return true;
+		}
+		return false;
+	}
+	
+	// lets try valid enters
+	private boolean validMove(int BrickRow,int BrickCol,int enterNode) {
+		
+		/*
+		 * Will check if the move that was made in our search for
+		 * the g is even valid.
+		 * if so the pathToGoal recursive func will be called.
+		 */
+		
+		switch(enterNode) {
+		case 0:
+			// checks if there's an above brick
+			if (BrickRow-1 >= 0 && validTouch(this.PipeBoardState[BrickRow][BrickCol].get().charAt(0),this.PipeBoardState[BrickRow-1][BrickCol].get().charAt(0),2))
+				return pathToGoal(BrickRow-1,BrickCol,2);
+			break;
+		case 1:
+			// check if there's an right brick
+			if (BrickCol+1 <= numOfCols - 1 && validTouch(this.PipeBoardState[BrickRow][BrickCol].get().charAt(0),this.PipeBoardState[BrickRow][BrickCol+1].get().charAt(0),3))
+				return pathToGoal(BrickRow,BrickCol+1,3);	
+			break;
+		case 2:
+			// check if there's an down brick
+			if (BrickRow+1 <= numOfRows - 1 && validTouch(this.PipeBoardState[BrickRow][BrickCol].get().charAt(0),this.PipeBoardState[BrickRow+1][BrickCol].get().charAt(0),0))
+				return pathToGoal(BrickRow+1,BrickCol,0);
+			break;
+		case 3:
+			// check if there's an left brick
+			if (BrickCol-1 >= 0 && validTouch(this.PipeBoardState[BrickRow][BrickCol].get().charAt(0),this.PipeBoardState[BrickRow][BrickCol-1].get().charAt(0),1))
+				return pathToGoal(BrickRow,BrickCol-1,1);	
+			break;
+		}
+		return false;
+	}
+
+	private boolean validTouch(char c, char d,int enterNodeTod) {
+		if (c == ' ' || d == ' ')
+			return false;
+		
+		if (c == '|') {
+			switch(enterNodeTod) {
+				case(2):
+					if (d == '|' || d == '7' || d == 'F' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(0):
+					if (d == '|' || d == 'L' || d == 'J' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
 					return false;
 			}
-		return true;
-	}*/
-
+		}
+		if (c == '-') {
+			switch(enterNodeTod) {
+				case(3):
+					if (d == '-' || d == '7' || d == 'J' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(1):
+					if (d == '-' || d == 'L' || d == 'F' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == 'L') {
+			switch(enterNodeTod) {
+				case(2):
+					if (d == '|' || d == '7' || d == 'F' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(3):
+					if (d == '-' || d == '7' || d == 'J' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == 'J') {
+			switch(enterNodeTod) {
+				case(2):
+					if (d == '|' || d == '7' || d == 'F' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(1):
+					if (d == '-' || d == 'F' || d == 'L' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == '7') {
+			switch(enterNodeTod) {
+				case(0):
+					if (d == '|' || d == 'J' || d == 'L' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(1):
+					if (d == '-' || d == 'F' || d == 'L' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == 'F') {
+			switch(enterNodeTod) {
+				case(0):
+					if (d == '|' || d == 'J' || d == 'L' || d == 's' || d == 'g')
+						return true;
+					break;
+				case(3):
+					if (d == '-' || d == 'J' || d == '7' || d == 's' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == 's') {
+			switch(enterNodeTod) {
+			case(0):
+				if (d == '|' || d == 'J' || d == 'L' || d == 'g')
+					return true;
+				break;
+			case(1):
+				if (d == '-' || d == 'F' || d == 'L' || d == 'g')
+					return true;
+				break;
+			case(2):
+					if (d == '|' || d == 'F' || d == '7' || d == 'g')
+						return true;
+					break;
+			case(3):
+					if (d == '-' || d == 'J' || d == '7' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+			}
+		}
+		if (c == 'g') {
+			switch(enterNodeTod) {
+			case(0):
+				if (d == '|' || d == 'J' || d == 'L' || d == 'g')
+					return true;
+				break;
+			case(1):
+				if (d == '-' || d == 'F' || d == 'L' || d == 'g')
+					return true;
+				break;
+			case(2):
+					if (d == '|' || d == 'F' || d == '7' || d == 'g')
+						return true;
+					break;
+			case(3):
+					if (d == '-' || d == 'J' || d == '7' || d == 'g')
+						return true;
+					break;
+				default:
+					return false;
+					}
+		}
+		return false;
+	}
+	
+	// Helping method for isGoal()
+	private boolean pathToGoal(int BrickRow, int BrickCol,int enterNode) {
+		// Don't return to S
+		if (BrickRow == sPos[0] && BrickCol == sPos[1])
+			return false;
+		// if we have reached G return true
+		if (BrickRow == gPos[0] && BrickCol == gPos[1])
+			return true;
+		for (int i = 0; i < 4 ; i++) {
+			// Checks we aren't returning back
+			char go = this.PipeBoardState[BrickRow][BrickCol].get().charAt(0);
+			if (i != enterNode) {
+				if (PossibleExit(go,i)) {
+					if(validMove(BrickRow,BrickCol,i))
+						return true;
+			
+				}
+		}
+		}
+		return false;
+	}
+	
+	private boolean PossibleExit(char go, int enterNode) {
+		if (go == 's' || go == 'g')
+			return true;
+		 switch(go) {
+			case '|':
+				if(enterNode==2)
+						return true;
+				if(enterNode==0)
+						return true;
+				break;
+			case 'L':
+				if(enterNode==0)
+						return true;
+				if(enterNode==1)
+						return true;
+				break;
+			case 'F':
+				if(enterNode==1)
+						return true;
+				if(enterNode==2)
+						return true;
+				break;
+			case '7':
+				if(enterNode==3)
+						return true;
+				if(enterNode==2)
+						return true;
+				break;
+			case 'J':
+				if(enterNode==0)
+						return true;
+				if(enterNode==3)
+						return true;
+				break;
+			case '-':
+				if(enterNode==3)
+						return true;
+				if(enterNode==1)
+						return true;
+				break;
+					
+			}
+		return false;
+	}
+	
 	@Override
 	public void itemPressed(int i , int j) {
 		
@@ -158,7 +412,6 @@ public class PipeGameModel extends Observable implements gameModel {
 
 	@Override
 	public StringProperty getItemState(int i, int j) {
-		// TODO Auto-generated method stub
 		return PipeBoardState[i][j];
 	}
 
