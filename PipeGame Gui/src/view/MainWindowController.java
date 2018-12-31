@@ -14,6 +14,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
@@ -35,6 +37,7 @@ public class MainWindowController implements Initializable,Observer{
 	int numOfCols;
     pipeGameViewModel vm;
 	public StringProperty[][] pipeData;
+	IntegerProperty time; // Time pass since game start
 	@FXML
 	PipeDisplayer pipeDisplayer;
 	
@@ -47,6 +50,8 @@ public class MainWindowController implements Initializable,Observer{
 				vm.mazeState[i][j].bindBidirectional(pipeData[i][j]);
 			}
 		}
+		this.time = new SimpleIntegerProperty();
+		this.time.bind(this.vm.time);
 	}
 	
 	
@@ -75,6 +80,7 @@ public class MainWindowController implements Initializable,Observer{
 			}
 			};
 		 pipeDisplayer.setOnMouseClicked(circleOnMouseEventHandler);
+		 
 	}
 
 	
@@ -180,6 +186,15 @@ public class MainWindowController implements Initializable,Observer{
 			this.theme = 2;
 			//this.pipeDisplayer = new PipeDisplayer(2);
 	}};
+	
+	public void status() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Game Status");
+		alert.setHeaderText(null);
+		alert.setContentText("Time:  " + this.time.get() + " Seconds");
+
+		alert.showAndWait();
+	}
 	
 	public void edit() {
 		try {
