@@ -21,6 +21,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -241,6 +243,16 @@ public class MainWindowController implements Initializable,Observer{
 				}
 			pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 			}
+    	
+    		// Create popUp if the cilck gave the solution
+    		if(this.vm.isSolution()) {
+    			Alert alert = new Alert(AlertType.INFORMATION);
+    			alert.setTitle("You win!!!!!");
+    			alert.setHeaderText(null);
+    			alert.setContentText("Great job friend!\nWe knew we can count on you!");
+
+    			alert.showAndWait();	
+    		}
     	}
 
 	@Override

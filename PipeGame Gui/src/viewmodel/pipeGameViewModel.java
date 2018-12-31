@@ -79,5 +79,9 @@ public class pipeGameViewModel extends Observable implements Observer {
 		// TODO Auto-generated method stub
 		setChanged();
 		notifyObservers();
+	}
+
+	public boolean isSolution() {
+		return this.model.isSolution();
 	}	
 }
