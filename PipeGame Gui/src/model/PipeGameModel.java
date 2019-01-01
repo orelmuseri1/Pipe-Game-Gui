@@ -7,8 +7,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Observable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
@@ -18,10 +22,17 @@ public class PipeGameModel extends Observable implements gameModel {
 	// Properties
 	int numOfRows;
 	int numOfCols;
-	int countMoves; // Number of moves made
+	public IntegerProperty numberOfSteps; // number of steps made since game start
+	public IntegerProperty time; // Time pass since game start
 	StringProperty[][] PipeBoardState; // Current state of the board.
 	StringProperty gameSolution; // The game end solution given by the server.
 	int[] sPos,gPos;
+	Timer timeCounter  = new Timer();
+	TimerTask task = new TimerTask() {
+		public void run(){
+			time.set(time.get() + 1);
+		}
+	};
 
 	// CTOR
 	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols) {
@@ -51,6 +62,11 @@ public class PipeGameModel extends Observable implements gameModel {
 					gPos[1] = j;
 				}
 			}
+		
+		// Set timer
+		this.time = new SimpleIntegerProperty();
+		this.numberOfSteps = new SimpleIntegerProperty(0);
+		timeCounter.scheduleAtFixedRate(task, 1000, 1000);
 	}
 	
 	// Methods
@@ -404,7 +420,7 @@ public class PipeGameModel extends Observable implements gameModel {
 			default:
 				break;
 			}
-			++countMoves;
+			this.numberOfSteps.set(this.numberOfSteps.get() + 1);
 			// This next to lines will notify the viewModel that will next change the view
 			setChanged();
 			notifyObservers();
