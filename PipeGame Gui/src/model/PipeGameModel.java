@@ -11,6 +11,7 @@ import java.util.Observable;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Task;
 
 public class PipeGameModel extends Observable implements gameModel {
 
@@ -88,17 +89,11 @@ public class PipeGameModel extends Observable implements gameModel {
 
 	@Override
 	public void solveGame() {
+		   Task<Void> task = new Task<Void>() {
+			   protected Void call() {
 		try {
-			
-			/*
-			 * Here we will get solution from the server as a string,
-			 * we will split the string by , to get a list of numbers.
-			 * we will cast the numbers to int so we could you them for 
-			 * the itemPressed function which will rotate our board.
-			 */
-			
-			this.gameSolution.set(getSolutionFromServer());
-			String[] solution = (this.gameSolution.getValue()).split(",");
+			gameSolution.set(getSolutionFromServer());
+			String[] solution = (gameSolution.getValue()).split(",");
 			for (int i = 0 ; i < solution.length; i += 3) {
 				for (int j = 0 ; j < Integer.parseInt(solution[i+2]); ++j) {
 					int rowToPress = Integer.parseInt(solution[i]);
@@ -113,9 +108,14 @@ public class PipeGameModel extends Observable implements gameModel {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} 
+		}
+		return null; 
+		   }
+		   };
+	        new Thread(task).start();
 	}
 
+	
 	@Override
 	public String getSolution() {
 		return this.gameSolution.getValue();
