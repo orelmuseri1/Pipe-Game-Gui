@@ -44,6 +44,8 @@ public class MainWindowController implements Initializable,Observer{
 	
 	public void setViewModel(pipeGameViewModel viewModel) {
 		this.vm = new pipeGameViewModel(viewModel);
+		this.numOfRows = vm.getNumOfRows();
+		this.numOfCols = vm.getNumOfCols();
 		this.pipeData = new StringProperty[viewModel.getNumOfRows()][viewModel.getNumOfCols()];
 		for (int i = 0 ; i < vm.getNumOfRows() ; ++i) {
 			for (int j = 0 ; j < vm.getNumOfCols() ; ++j) {
@@ -51,6 +53,8 @@ public class MainWindowController implements Initializable,Observer{
 				vm.mazeState[i][j].bindBidirectional(pipeData[i][j]);
 			}
 		}
+		vm.model.addObserver(this.vm);
+		vm.addObserver(this);
 		this.time = new SimpleIntegerProperty();
 		this.time.bind(this.vm.time);
 		this.numberOfSteps = new SimpleIntegerProperty();
@@ -122,7 +126,17 @@ public class MainWindowController implements Initializable,Observer{
 
 				String line;
 				while ((line = reader.readLine()) != null) {
-					lines.add(line.toCharArray());
+					if(line.startsWith("Time=")) {
+						this.time.unbind();
+						this.time.set(Integer.parseInt(line.split("=")[1]));
+					}
+					else if(line.startsWith("Steps=")) {
+						this.numberOfSteps.unbind();
+						this.numberOfSteps.set(Integer.parseInt(line.split("=")[1]));
+					}
+					else {
+						lines.add(line.toCharArray());
+					}
 				}
 				reader.close();
 			} catch (IOException e) {
@@ -131,7 +145,17 @@ public class MainWindowController implements Initializable,Observer{
 			}
 
 			char[][] charArray = lines.toArray(new char[lines.size()][]);
-			vm.newMaze(charArray,lines.size(),lines.get(0).length);
+			/*
+			 * Because there is a possibility that 
+			 * a level without time or steps
+			 * we will check if the time property is still 
+			 * bound if so, we will address it as a new level
+			 */
+			if (this.time.isBound())
+				vm.newMaze(charArray,lines.size(),lines.get(0).length);
+			else
+				vm.newMaze(charArray,lines.size(),lines.get(0).length,this.time,this.numberOfSteps);
+			this.setViewModel(vm);
 			pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 		}
 	}
@@ -165,7 +189,8 @@ public class MainWindowController implements Initializable,Observer{
 			}
 			outFile.println();
 		}
-
+		outFile.println("Time=" + this.time.get());
+		outFile.println("Steps=" + this.numberOfSteps.get());
 		outFile.close();
 	}
 	

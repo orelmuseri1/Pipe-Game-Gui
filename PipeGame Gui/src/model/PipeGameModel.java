@@ -71,6 +71,43 @@ public class PipeGameModel extends Observable implements gameModel {
 	
 	// Methods
 
+	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols,IntegerProperty givenTime,
+			IntegerProperty givenNumberOfSteps) {
+		// TODO Auto-generated constructor stuthis.numOfRows = numOfRows;
+		this.numOfCols = numOfCols;
+		this.PipeBoardState = new StringProperty[numOfRows][numOfCols];
+		this.gameSolution=new SimpleStringProperty();
+		this.gameSolution.set("");
+		
+		// Copy board
+		for (int i = 0 ; i < numOfRows; ++i)
+			for (int j = 0 ; j < numOfCols; ++j) {
+				this.PipeBoardState[i][j] = new SimpleStringProperty(Character.toString(board[i][j]));
+			}
+		
+		// Search for the s and g, place them in int array, first num is row second is col.
+		this.sPos = new int[2];
+		this.gPos = new int[2];
+		for (int i = 0 ; i < numOfRows; ++i)
+			for (int j = 0 ; j < numOfCols; ++j) {
+				if (this.PipeBoardState[i][j].get().charAt(0) == 's') {
+					sPos[0] = i;
+					sPos[1] = j;
+				}
+				if (this.PipeBoardState[i][j].get().charAt(0) == 'g') {
+					gPos[0] = i;
+					gPos[1] = j;
+				}
+			}
+		
+		// Set timer
+		this.time = new SimpleIntegerProperty();
+		this.time.set(givenTime.get());
+		this.numberOfSteps = new SimpleIntegerProperty(0);
+		this.numberOfSteps.set(givenNumberOfSteps.get());
+		timeCounter.scheduleAtFixedRate(task, 1000, 1000);
+	}
+
 	/*
 	 * getSolutionFromServer will you send the pipeBoardState  
 	 * board and will receive back the solution.
