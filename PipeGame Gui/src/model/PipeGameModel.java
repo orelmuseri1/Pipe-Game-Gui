@@ -129,7 +129,7 @@ public class PipeGameModel extends Observable implements gameModel {
 		   }
 		   };
 	        new Thread(task).start();
-	}
+	        }
 
 	
 	@Override
