@@ -10,24 +10,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import model.PipeGameModel;
 import viewmodel.pipeGameViewModel;
 
@@ -39,6 +41,8 @@ public class MainWindowController implements Initializable,Observer{
 	public StringProperty[][] pipeData;
 	IntegerProperty time; // Time pass since game start
 	public IntegerProperty numberOfSteps; // number of steps made since game start
+	int port = 10000;
+	String ip = "localhost";
 	@FXML
 	PipeDisplayer pipeDisplayer;
 	
@@ -46,6 +50,8 @@ public class MainWindowController implements Initializable,Observer{
 		this.vm = new pipeGameViewModel(viewModel);
 		this.numOfRows = vm.getNumOfRows();
 		this.numOfCols = vm.getNumOfCols();
+		this.ip = vm.ip;
+		this.port = vm.port;
 		this.pipeData = new StringProperty[viewModel.getNumOfRows()][viewModel.getNumOfCols()];
 		for (int i = 0 ; i < vm.getNumOfRows() ; ++i) {
 			for (int j = 0 ; j < vm.getNumOfCols() ; ++j) {
@@ -73,8 +79,8 @@ public class MainWindowController implements Initializable,Observer{
 		
 		this.numOfRows = 2;
 		this.numOfCols= 3;
-		PipeGameModel pgm = new PipeGameModel(pipeData,numOfRows,numOfCols);
-		this.setViewModel(new pipeGameViewModel(pgm, numOfRows,numOfCols));
+		PipeGameModel pgm = new PipeGameModel(pipeData,numOfRows,numOfCols,port,ip);
+		this.setViewModel(new pipeGameViewModel(pgm, numOfRows,numOfCols,port,ip));
 		pgm.addObserver(this.vm);
 		vm.addObserver(this);
 		pipeDisplayer.setMazeData(this.pipeData,numOfRows,numOfCols);
@@ -152,9 +158,9 @@ public class MainWindowController implements Initializable,Observer{
 			 * bound if so, we will address it as a new level
 			 */
 			if (this.time.isBound())
-				vm.newMaze(charArray,lines.size(),lines.get(0).length);
+				vm.newMaze(charArray,lines.size(),lines.get(0).length,port,ip);
 			else
-				vm.newMaze(charArray,lines.size(),lines.get(0).length,this.time,this.numberOfSteps);
+				vm.newMaze(charArray,lines.size(),lines.get(0).length,port,ip,this.time,this.numberOfSteps);
 			this.setViewModel(vm);
 			pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 		}
@@ -225,23 +231,42 @@ public class MainWindowController implements Initializable,Observer{
 	}
 	
 	public void edit() {
-		try {
-	        FXMLLoader fxmlLoader = new FXMLLoader();
-	        fxmlLoader.setLocation(getClass().getResource("/view/SettingWindow.fxml"));
-	        /* 
-	         * if "fx:controller" is not set in fxml
-	         * fxmlLoader.setController(NewWindowController);
-	         */ 
-	        Scene scene = new Scene(fxmlLoader.load());
-	        Stage stage = new Stage();
-	        stage.setTitle("Edit");
-	        stage.setScene(scene);
-	        stage.show();
-	    } catch (IOException e) {
-	        Logger logger = Logger.getLogger(getClass().getName());
-	        logger.log(Level.SEVERE, "Failed to create new Window.", e);
-	    }
+		// Create the custom dialog.
+		Dialog<String[]> dialog = new Dialog<>();
+		dialog.setTitle("Game setting");
+		dialog.setHeaderText("Change port and ip as you wish, be careful");
+		
+		// Set the button types.
+		ButtonType doneButtonType = new ButtonType("Done", ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(doneButtonType, ButtonType.CANCEL);	
+		
+		// Create the port and ip labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
 	
+		TextField portField = new TextField();
+		portField.setPromptText("port");
+		TextField ipField = new TextField();
+		ipField.setPromptText("ip");
+		
+		grid.add(new Label("port:"), 0, 0);
+		grid.add(portField, 1, 0);
+		grid.add(new Label("ip:"), 0, 1);
+		grid.add(ipField, 1, 1);
+		dialog.getDialogPane().setContent(grid);	
+		Optional<String[]> result = dialog.showAndWait();
+		
+		if (result.isPresent()){
+			System.out.println(Integer.parseInt(portField.getText()));
+			this.port = Integer.parseInt(portField.getText());
+			System.out.println(ipField.getText());
+			this.ip = ipField.getText();
+		}
+		this.vm.newMaze(this.pipeDisplayer.pipeData, numOfRows, numOfCols, port, ip, this.time, this.numberOfSteps);
+		this.setViewModel(vm);
+		pipeDisplayer.setMazeData(this.pipeData,this.numOfRows,this.numOfCols);
 	}
 
     void click(double x,double y) {

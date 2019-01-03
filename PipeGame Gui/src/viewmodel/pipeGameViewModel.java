@@ -15,18 +15,16 @@ public class pipeGameViewModel extends Observable implements Observer {
 	public PipeGameModel model;
 	int numOfRows;
 	int numOfCols;
-	public StringProperty ip;
-	public IntegerProperty port;
+	public String ip;
+	public int port;
 	public StringProperty[][] mazeState; 
 	public IntegerProperty time; // Time pass since game start
 	public IntegerProperty numberOfSteps; // number of steps made since game start
 	
-	public pipeGameViewModel(PipeGameModel m,int numOfRows,int numOfCols) {
-		ip = new SimpleStringProperty();
-		ip.bindBidirectional(m.ip);
-		port = new SimpleIntegerProperty();
-		port.bindBidirectional(m.port);
+	public pipeGameViewModel(PipeGameModel m,int numOfRows,int numOfCols,int port,String ip) {
 		this.model = m;
+		this.ip = ip;
+		this.port = port;
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.mazeState = new StringProperty[numOfRows][numOfCols];
@@ -42,10 +40,12 @@ public class pipeGameViewModel extends Observable implements Observer {
 
 	}
 
-	public pipeGameViewModel(pipeGameViewModel viewModel) {
+		public pipeGameViewModel(pipeGameViewModel viewModel) {
 		// TODO Auto-generated constructor stub
 		this.numOfRows = viewModel.numOfRows;
 		this.numOfCols = viewModel.numOfCols;
+		this.ip = viewModel.ip;
+		this.port = viewModel.port;
 		this.model = viewModel.model;
 		this.mazeState = new StringProperty[numOfRows][numOfCols];
 		for (int i = 0 ; i < this.numOfRows ; ++i)
@@ -82,11 +82,13 @@ public class pipeGameViewModel extends Observable implements Observer {
 	 *  this method will get the char array that
 	 *  was extracted and will create a new model.
 	 */
-	public void newMaze(char[][] charArray, int numOfRows,int numOfCols, IntegerProperty givenTime, IntegerProperty givenNumberOfSteps) {
+	public void newMaze(char[][] charArray, int numOfRows,int numOfCols,int port,String ip, IntegerProperty givenTime, IntegerProperty givenNumberOfSteps) {
 		// TODO Auto-generated method stub
-		this.model = new PipeGameModel(charArray, numOfRows, numOfCols,givenTime,givenNumberOfSteps); 
+		this.model = new PipeGameModel(charArray, numOfRows, numOfCols,port,ip,givenTime,givenNumberOfSteps); 
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
+		this.port = port;
+		this.ip = ip; 
 		this.time.unbind();
 		this.time.set(givenTime.get());
 		this.numberOfSteps.unbind();
@@ -99,9 +101,9 @@ public class pipeGameViewModel extends Observable implements Observer {
 			}
 	}
 	
-	public void newMaze(char[][] charArray, int numOfRows,int numOfCols) {
+	public void newMaze(char[][] charArray, int numOfRows,int numOfCols,int port,String ip) {
 		// TODO Auto-generated method stub
-		this.model = new PipeGameModel(charArray, numOfRows, numOfCols); 
+		this.model = new PipeGameModel(charArray, numOfRows, numOfCols,port,ip); 
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.mazeState = new StringProperty[numOfRows][numOfCols];

@@ -22,8 +22,8 @@ public class PipeGameModel extends Observable implements gameModel {
 	// Properties
 	int numOfRows;
 	int numOfCols;
-	public IntegerProperty port;
-	public StringProperty ip;
+	int port;
+	String ip;
 	public IntegerProperty numberOfSteps; // number of steps made since game start
 	public IntegerProperty time; // Time pass since game start
 	StringProperty[][] PipeBoardState; // Current state of the board.
@@ -37,9 +37,7 @@ public class PipeGameModel extends Observable implements gameModel {
 	};
 
 	// CTOR
-	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols) {
-		port = new SimpleIntegerProperty();
-		ip = new SimpleStringProperty();
+	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols,int port,String ip) {
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.PipeBoardState = new StringProperty[numOfRows][numOfCols];
@@ -70,14 +68,17 @@ public class PipeGameModel extends Observable implements gameModel {
 		// Set timer
 		this.time = new SimpleIntegerProperty();
 		this.numberOfSteps = new SimpleIntegerProperty(0);
+		this.port = port;
+		this.ip = ip;
 		timeCounter.scheduleAtFixedRate(task, 1000, 1000);
 	}
 	
 	// Methods
 
-	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols,IntegerProperty givenTime,
+	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols,int port,String ip,IntegerProperty givenTime,
 			IntegerProperty givenNumberOfSteps) {
 		// TODO Auto-generated constructor stuthis.numOfRows = numOfRows;
+		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.PipeBoardState = new StringProperty[numOfRows][numOfCols];
 		this.gameSolution=new SimpleStringProperty();
@@ -109,6 +110,8 @@ public class PipeGameModel extends Observable implements gameModel {
 		this.time.set(givenTime.get());
 		this.numberOfSteps = new SimpleIntegerProperty(0);
 		this.numberOfSteps.set(givenNumberOfSteps.get());
+		this.port = port;
+		this.ip = ip;
 		timeCounter.scheduleAtFixedRate(task, 1000, 1000);
 	}
 
@@ -117,7 +120,8 @@ public class PipeGameModel extends Observable implements gameModel {
 	 * board and will receive back the solution.
 	 */
 	private String getSolutionFromServer() throws UnknownHostException, IOException {
-	    Socket theServer = new Socket("localhost", 10000);
+		System.out.println(ip + " " + port);
+	    Socket theServer = new Socket(ip, port);
         System.out.println("Connected to server");
 	    BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(theServer.getInputStream()));
