@@ -227,7 +227,7 @@ public class MainWindowController implements Initializable,Observer{
 	public void edit() {
 		try {
 	        FXMLLoader fxmlLoader = new FXMLLoader();
-	        fxmlLoader.setLocation(getClass().getResource("/view/MainWindow.fxml"));
+	        fxmlLoader.setLocation(getClass().getResource("/view/SettingWindow.fxml"));
 	        /* 
 	         * if "fx:controller" is not set in fxml
 	         * fxmlLoader.setController(NewWindowController);

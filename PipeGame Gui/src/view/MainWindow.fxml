@@ -22,22 +22,17 @@
               <MenuItem mnemonicParsing="false" onAction="#solveGame" text="solve"></MenuItem>
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="options">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="edit" />
+              <MenuItem mnemonicParsing="false" onAction='#status' text="Status" />
               <MenuItem mnemonicParsing="false" text="other" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="view" text="Help">
+          <Menu mnemonicParsing="view" text="change theme">
             <items>
               <MenuItem mnemonicParsing="false" onAction='#theme1' text="theme 1" />
               <MenuItem mnemonicParsing="false" onAction='#theme2' text="theme 2" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction='#status' text="Status" />
-              <MenuItem mnemonicParsing="false" text="About" />
             </items>
           </Menu>
         </menus>

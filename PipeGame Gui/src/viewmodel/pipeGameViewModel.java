@@ -15,11 +15,17 @@ public class pipeGameViewModel extends Observable implements Observer {
 	public PipeGameModel model;
 	int numOfRows;
 	int numOfCols;
+	public StringProperty ip;
+	public IntegerProperty port;
 	public StringProperty[][] mazeState; 
 	public IntegerProperty time; // Time pass since game start
 	public IntegerProperty numberOfSteps; // number of steps made since game start
 	
 	public pipeGameViewModel(PipeGameModel m,int numOfRows,int numOfCols) {
+		ip = new SimpleStringProperty();
+		ip.bindBidirectional(m.ip);
+		port = new SimpleIntegerProperty();
+		port.bindBidirectional(m.port);
 		this.model = m;
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;

@@ -22,6 +22,8 @@ public class PipeGameModel extends Observable implements gameModel {
 	// Properties
 	int numOfRows;
 	int numOfCols;
+	public IntegerProperty port;
+	public StringProperty ip;
 	public IntegerProperty numberOfSteps; // number of steps made since game start
 	public IntegerProperty time; // Time pass since game start
 	StringProperty[][] PipeBoardState; // Current state of the board.
@@ -36,6 +38,8 @@ public class PipeGameModel extends Observable implements gameModel {
 
 	// CTOR
 	public PipeGameModel(char[][] board ,int numOfRows,int numOfCols) {
+		port = new SimpleIntegerProperty();
+		ip = new SimpleStringProperty();
 		this.numOfRows = numOfRows;
 		this.numOfCols = numOfCols;
 		this.PipeBoardState = new StringProperty[numOfRows][numOfCols];
