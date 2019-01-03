@@ -232,9 +232,9 @@ public class MainWindowController implements Initializable,Observer{
 	         * if "fx:controller" is not set in fxml
 	         * fxmlLoader.setController(NewWindowController);
 	         */ 
-	        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+	        Scene scene = new Scene(fxmlLoader.load());
 	        Stage stage = new Stage();
-	        stage.setTitle("EDIT_IP_AND_PORT");
+	        stage.setTitle("Edit");
 	        stage.setScene(scene);
 	        stage.show();
 	    } catch (IOException e) {

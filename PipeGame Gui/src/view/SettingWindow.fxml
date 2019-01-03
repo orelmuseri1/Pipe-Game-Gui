@@ -12,9 +12,9 @@
 
 <BorderPane prefHeight="153.0" prefWidth="191.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SettingsWindowController">
    <center>
-      <VBox prefHeight="200.0" prefWidth="192.0" spacing="5.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="7.0" prefWidth="31.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="193.0" text="Server Settings">
+            <Label alignment="CENTER" prefHeight="18.0" prefWidth="111.0" text="Server Settings:">
                <font>
                   <Font name="Day Poster Black NF" size="14.0" />
                </font>
@@ -22,13 +22,13 @@
             <HBox prefHeight="39.0" prefWidth="200.0">
                <children>
                   <Label prefHeight="39.0" prefWidth="90.0" text="IP" />
-                  <TextField fx:id="ipField" prefHeight="43.0" prefWidth="139.0" promptText="localHost" />
+                  <TextField fx:id="ipField" prefHeight="39.0" prefWidth="140.0" promptText="localHost" />
                </children>
             </HBox>
             <HBox prefHeight="39.0" prefWidth="200.0">
                <children>
                   <Label prefHeight="39.0" prefWidth="90.0" text="Port" />
-                  <TextField fx:id="portField" prefHeight="43.0" prefWidth="139.0" promptText="10000" />
+                  <TextField fx:id="portField" prefHeight="39.0" prefWidth="140.0" promptText="10000" />
                </children>
             </HBox>
          </children>
@@ -40,7 +40,7 @@
    <top>
    </top>
    <bottom>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ToolBar prefHeight="39.0" prefWidth="70.0" BorderPane.alignment="CENTER">
         <items>
           <Button mnemonicParsing="false" onAction="#save" text="Save" />
         </items>

@@ -247,6 +247,9 @@ public class PipeDisplayer extends Canvas{
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(INDEFINITE);
 	}
+	//mute:
+	//mediaPlayer.setVolume(0.0);
+	//isMuted = true;
 
 }
 
