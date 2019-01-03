@@ -213,15 +213,38 @@ public class MainWindowController implements Initializable,Observer{
 		if (this.theme != 1) {
 			this.theme = 1;
 			//this.pipeDisplayer = new PipeDisplayer(1);
+			pipeDisplayer.Theme="/resources/clasic/";
+			try {
+				pipeDisplayer.redraw();
+				pipeDisplayer.mute();
+				pipeDisplayer.play();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
-
+	
 	public void theme2() {
 		if (this.theme != 2) {
 			this.theme = 2;
 			//this.pipeDisplayer = new PipeDisplayer(2);
+			pipeDisplayer.Theme="/resources/mario/";
+			try {
+				pipeDisplayer.redraw();
+				pipeDisplayer.mute();
+				pipeDisplayer.play();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}};
-	
+	public void mute() {
+		if(pipeDisplayer.mediaPlayer.getVolume()>0.1)
+	pipeDisplayer.mute();
+		else
+	pipeDisplayer.play();
+	}
 	public void status() {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Game Status");

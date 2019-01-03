@@ -4,6 +4,9 @@ import java.io.File;
 import static javafx.scene.media.AudioClip.INDEFINITE;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.SnapshotParameters;
@@ -25,8 +28,9 @@ public class PipeDisplayer extends Canvas{
 	private StringProperty anglePipeFileName=null;
 	private StringProperty verticalPipeFileName=null;
 	private Image Lp = null, widthLine=null, highLine=null ,jp=null ,Fp=null, seven=null, background= null, sp=null,gp=null;
-	
-	
+	final Path path = (Path) FileSystems.getDefault().getPath(".");
+	String Theme= "/resources/clasic/";
+	MediaPlayer mediaPlayer;
 		public PipeDisplayer() {
 		this.backgroundFileName = new SimpleStringProperty();
 		this.startFileName = new SimpleStringProperty();
@@ -155,11 +159,11 @@ public class PipeDisplayer extends Canvas{
 			SnapshotParameters params = new SnapshotParameters();
 			params.setFill(Color.TRANSPARENT);
 
-			widthLine = new Image(new FileInputStream(verticalPipeFileName.get()));
+			widthLine = new Image(new FileInputStream(path+Theme+verticalPipeFileName.get()));
 			ImageView iv = new ImageView(widthLine);
 			iv.setRotate(90);
 			highLine = iv.snapshot(params, null);
-			Lp= new Image(new FileInputStream(anglePipeFileName.get()));
+			Lp= new Image(new FileInputStream(path+Theme+anglePipeFileName.get()));
 			iv = new ImageView(Lp);
 			iv.setRotate(90);
 			Fp = iv.snapshot(params, null);
@@ -167,9 +171,9 @@ public class PipeDisplayer extends Canvas{
 			seven = iv.snapshot(params, null);
 			iv.setRotate(270);
 			jp = iv.snapshot(params, null);
-			sp = new Image(new FileInputStream(startFileName.get()));
-			gp = new Image(new FileInputStream(goalFileName.get()));
-			background= new Image(new FileInputStream(backgroundFileName.get()));
+			sp = new Image(new FileInputStream(path+Theme+startFileName.get()));
+			gp = new Image(new FileInputStream(path+Theme+goalFileName.get()));
+			background= new Image(new FileInputStream(path+Theme+backgroundFileName.get()));
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -241,15 +245,15 @@ public class PipeDisplayer extends Canvas{
 	}
 
 	void play() {
-		String musicFile = "./resources/icy_tower.mp3";  
+		String musicFile = path+Theme+"music.mp3";  
 		Media sound = new Media(new File(musicFile).toURI().toString());
-		MediaPlayer mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer = new MediaPlayer(sound);
 		mediaPlayer.setAutoPlay(true);
 		mediaPlayer.setCycleCount(INDEFINITE);
 	}
-	//mute:
-	//mediaPlayer.setVolume(0.0);
-	//isMuted = true;
+	void mute() {
+	mediaPlayer.setVolume(0.0);
+	}
 
 }
 

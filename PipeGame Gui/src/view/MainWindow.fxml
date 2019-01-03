@@ -26,7 +26,7 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#edit" text="edit" />
               <MenuItem mnemonicParsing="false" onAction='#status' text="Status" />
-              <MenuItem mnemonicParsing="false" text="other" />
+              <MenuItem mnemonicParsing="false" onAction='#mute' text="mute/play" />
             </items>
           </Menu>
           <Menu mnemonicParsing="view" text="change theme">
@@ -42,11 +42,11 @@
     <StackPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
     <children>	
       <PipeDisplayer fx:id="pipeDisplayer"  
-         startFileName = 		"./resources/s.jpg" 
-      	 goalFileName=			"./resources/g.jpg"  
-      	 anglePipeFileName=		"./resources/L.jpg"
-      	 verticalPipeFileName=	"./resources/-.jpg"
-      	 backgroundFileName= 	"./resources/background.jpg"/>
+         startFileName = 		"s.jpg" 
+      	 goalFileName=			"g.jpg"  
+      	 anglePipeFileName=		"L.jpg"
+      	 verticalPipeFileName=	"-.jpg"
+      	 backgroundFileName= 	"background.jpg"/>
       	 </children>
     </StackPane>
    </center>
